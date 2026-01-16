@@ -1,11 +1,11 @@
-use crate::activation;
+use crate::{activation, loss};
 use crate::linear;
 use rand::Rng;
 
 #[derive(Debug)]
 pub struct Neuron {
-    weights: linear::Vector,
-    bias: f64,
+    pub(crate) weights: linear::Vector,
+    pub(crate) bias: f64,
 }
 impl Neuron {
     pub fn new(in_size: usize) -> Neuron {
@@ -19,13 +19,7 @@ impl Neuron {
         self.weights.dot(ins) + self.bias
     }
 
-    pub fn loss(&self, prediction: f64, target: f64) -> f64 {
-        (prediction - target).powi(2)
-    }
 
-    pub fn loss_derivative(&self, prediction: f64, target: f64) -> f64 {
-        2_f64 * (prediction - target)
-    }
 
     pub fn train_one(
         &mut self,
@@ -37,9 +31,9 @@ impl Neuron {
         let z = self.weights.dot(input) + self.bias;
         let y = activation.apply(z);
 
-        let loss = self.loss(y, target);
+        let loss = loss::loss::mse(y, target);
 
-        let d_loss = self.loss_derivative(y, target);
+        let d_loss = loss::loss::d_mse(y, target);
         let d_z = activation.derivative(z);
 
         let d_loss_z = d_loss * d_z;
@@ -53,5 +47,11 @@ impl Neuron {
         self.bias -= lr * d_loss_b;
 
         loss
+    }
+    pub fn update_weights(&mut self, i: &linear::Vector, d: f64, lr: f64) {
+        for j in 0..self.weights.len() {
+            self.weights[j] -= lr * d * i[j];
+        }
+        self.bias -= lr *d;
     }
 }

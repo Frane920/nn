@@ -1,7 +1,7 @@
 use rand::Rng;
 use std::ops::{Add, Index, IndexMut, Mul};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Vector {
     pub(crate) data: Vec<f64>,
 }
@@ -32,11 +32,7 @@ impl Vector {
     }
 
     pub fn dot(&self, other: &Vector) -> f64 {
-        let mut dot = 0_f64;
-        for i in 0..self.len() {
-            dot += self[i] * other[i];
-        }
-        dot
+        self.data.iter().zip(&other.data).map(|(a, b)| a * b).sum()
     }
 }
 
