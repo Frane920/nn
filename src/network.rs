@@ -43,7 +43,7 @@ impl Network {
     pub fn train(&mut self, is: &[linear::Vector], targets: &[linear::Vector], lr: f64, epochs: usize, epochs_info: usize) -> Vec<f64> {
         let mut lossess = Vec::new();
 
-        for epoch in 0..epochs {
+        for epoch in 0..=epochs {
             let mut loss = 0.0;
             for (i, target) in is.iter().zip(targets.iter()) {
                 loss += self.train_one(i, target, lr);

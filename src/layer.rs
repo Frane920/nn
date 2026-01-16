@@ -9,9 +9,9 @@ pub struct Layer {
 }
 
 impl Layer {
-    pub fn new(input_size: usize, num_neurons: usize, activation: activation::Activation) -> Self {
-        let mut neurons = Vec::with_capacity(num_neurons);
-        for i in 0..num_neurons {
+    pub fn new(input_size: usize, n_n: usize, activation: activation::Activation) -> Self {
+        let mut neurons = Vec::with_capacity(n_n);
+        for _ in 0..n_n {
             neurons.push(neuron::Neuron::new(input_size))
         }
 

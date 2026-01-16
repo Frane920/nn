@@ -45,19 +45,19 @@ fn main() {
     ];
 
     let mut nn = network::Network::new(
-        vec![4, 8, 8, 2, 1],
+        vec![4, 4, 2, 1],
         vec![
             activation::Activation::Tanh,
-            activation::Activation::GELU,
+            activation::Activation::Tanh,
             activation::Activation::Tanh,
             activation::Activation::Sigmoid,
         ],
     );
 
     let lr = 0.05;
-    let epochs = 10_000_000;
+    let epochs = 1000000;
 
-    nn.train(&inputs, &targets, lr, epochs, 1000000);
+    nn.train(&inputs, &targets, lr, epochs, 100000);
 
 
 
