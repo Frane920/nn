@@ -1,4 +1,3 @@
-use std::sync::PoisonError;
 use crate::{activation, layer, loss};
 use crate::linear;
 

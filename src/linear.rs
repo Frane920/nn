@@ -39,14 +39,9 @@ impl Vector {
 impl Add for &Vector {
     type Output = Vector;
     fn add(self, other: &Vector) -> Vector {
-        if self.len() != other.len() {
-            panic!("Vector lengths do not match");
-        }
-        let mut v = Vector::new_size(self.len());
-        for i in 0..self.len() {
-            v[i] = self[i] + other[i];
-        }
-        v
+        let mut data = Vec::with_capacity(self.data.len());
+        data.extend(self.data.iter().zip(&other.data).map(|(a, b)| a + b));
+        Vector { data }
     }
 }
 
@@ -54,11 +49,10 @@ impl Mul<f64> for Vector {
     type Output = Vector;
 
     fn mul(self, scalar: f64) -> Vector {
-        let mut v = Vector::new_size(self.data.len());
-        for i in 0..self.len() {
-            v[i] = self[i] * scalar;
-        }
-        v
+        let data = self.data.into_iter()
+            .map(|x| x * scalar)
+            .collect();
+        Vector { data }
     }
 }
 

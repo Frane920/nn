@@ -8,9 +8,6 @@ pub mod loss {
     pub fn d_mse(pred: f64, target: f64) -> f64 {
         2_f64 * (pred - target)
     }
-    pub fn mse_derivative(pred: f64, target: f64) -> f64 {
-        2_f64 * (pred - target)
-    }
 
     pub fn mse_vector(pred: &linear::Vector, target: &linear::Vector) -> f64 {
         if pred.len() != target.len() {

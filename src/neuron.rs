@@ -9,8 +9,14 @@ pub struct Neuron {
 }
 impl Neuron {
     pub fn new(in_size: usize) -> Neuron {
+        let mut v = linear::Vector::new_size(in_size);
+        let mut rng = rand::rng();
+        let bound = (3.0 / in_size as f64).sqrt();
+        for i in 0..in_size {
+            v[i] = rng.random_range(-bound..bound);
+        }
         Neuron {
-            weights: linear::Vector::new_rand(in_size),
+            weights: v,
             bias: rand::rng().random_range(-0.5_f64..0.5_f64),
         }
     }
