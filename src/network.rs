@@ -1,18 +1,23 @@
-use crate::{activation, layer, loss};
 use crate::linear;
+use crate::{activation, layer, loss};
 
 pub struct Network {
     layers: Vec<layer::Layer>,
+    output_loss: loss::Loss,
 }
 
 impl Network {
-    pub fn new(layer_sizes: Vec<usize>, activations: Vec<activation::Activation>) -> Network {
-        let mut layers = Vec::<layer::Layer>::with_capacity(layer_sizes.len()-1);
+    pub fn new(layer_sizes: Vec<usize>, activations: Vec<activation::Activation>, output_loss: loss::Loss) -> Network {
+        let mut layers = Vec::<layer::Layer>::with_capacity(layer_sizes.len() - 1);
 
         for i in 0..layer_sizes.len() - 1 {
-            layers.push(layer::Layer::new(layer_sizes[i], layer_sizes[i + 1], activations[i].clone()));
+            layers.push(layer::Layer::new(
+                layer_sizes[i],
+                layer_sizes[i + 1],
+                activations[i].clone(),
+            ));
         }
-        Network { layers }
+        Network { layers, output_loss }
     }
 
     pub fn forward(&mut self, input: &linear::Vector) -> linear::Vector {
@@ -23,24 +28,31 @@ impl Network {
         current
     }
 
-    pub fn train_one(&mut self, i: &linear::Vector, target: &linear::Vector, lr: f64) -> f64 {
-        let mut c_i = i.clone();
+    pub fn train_one(&mut self, input: &linear::Vector, target: &linear::Vector, lr: f64) -> f64 {
+        let mut current = input.clone();
         for layer in &mut self.layers {
-            c_i = layer.forward(&c_i);
+            current = layer.forward(&current);
         }
-        let out = c_i;
-        let loss = loss::loss::mse_vector(&out, target);
-        let mut grad = linear::Vector::new_size(out.len());
-        for i in 0..out.len() {
-            grad[i] = 2_f64 * (out[i] - target[i]) / out.len() as f64;
-        }
+        let out = current;
+
+        let loss = self.output_loss.calc_vector(&out, target);
+        let mut grad = self.output_loss.grad_vector(&out, target);
+
         for layer in self.layers.iter_mut().rev() {
-            grad = layer.backward(&grad, lr)
+            grad = layer.backward(&grad, lr);
         }
+
         loss
     }
 
-    pub fn train(&mut self, is: &[linear::Vector], targets: &[linear::Vector], lr: f64, epochs: usize, epochs_info: usize) -> Vec<f64> {
+    pub fn train(
+        &mut self,
+        is: &[linear::Vector],
+        targets: &[linear::Vector],
+        lr: f64,
+        epochs: usize,
+        epochs_info: usize,
+    ) -> Vec<f64> {
         let mut lossess = Vec::new();
 
         for epoch in 0..=epochs {
@@ -55,6 +67,5 @@ impl Network {
             }
         }
         lossess
-
     }
 }
