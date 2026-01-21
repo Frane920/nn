@@ -1,5 +1,5 @@
 use crate::math::tensor::Tensor;
-use crate::modules::layer::Layer;
+use super::layer::Layer;
 use std::ops::{AddAssign, Add, Mul};
 use ndarray::{Ix1, Ix2, LinalgScalar};
 use num_traits::Num;
