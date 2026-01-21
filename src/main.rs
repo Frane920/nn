@@ -2,8 +2,8 @@ mod math;
 mod modules;
 
 use math::tensor::Tensor;
-use modules::layer::Layer;
-use modules::linear::Linear;
+use modules::layer::layer::Layer;
+use modules::layer::linear::Linear;
 use modules::network::Network;
 use modules::loss::loss::Loss;
 use modules::loss::mse::MSE;

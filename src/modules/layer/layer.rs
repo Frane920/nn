@@ -34,5 +34,5 @@ struct LayerGradient<D, T>
     where D: Dimension + LowerDimension,
 {
     w_grad: Array<T, D>,
-    b_grad: Array<T, D::Output>,
+    b_grad: Array<T, <D as LowerDimension>::Output>,
 }
